@@ -1,5 +1,5 @@
 
-import * as Swagger from 'swagger-json';
+import * as Swagger from './swagger-json/index';
 import * as SwaggerUi from 'swagger-ui-express';
 import * as fs from 'fs';
 import { regexpToPath } from './helper';
@@ -7,16 +7,18 @@ import { regexpToPath } from './helper';
 export function Doc(app: any, settings?: any) {
     const {info, host, basePath, documentationPath} = settings;
 
-    Swagger.swaggerDoc.createJsonDoc(info, host, basePath);
+    const swagger = new Swagger.Swagger();
+    swagger.createJsonDoc(info, host, basePath);
 
     app._router.stack.forEach((middleware: any) => {
+
         if (middleware.route) { // routes registered directly on the app
             const { path, stack } = middleware.route;
             if (path) {
                 stack.forEach((routeMehtod: any) => {
                     if (routeMehtod.name == 'validateRequest') {
                         const joiSchema = routeMehtod.handle('schemaBypass');
-                        Swagger.swaggerDoc.addNewRoute(joiSchema, path, routeMehtod.method)
+                        swagger.addNewRoute(joiSchema, path, routeMehtod.method)
                     }
                 })
             }
@@ -32,7 +34,7 @@ export function Doc(app: any, settings?: any) {
                     stack.forEach((routeMehtod: any) => {
                         if (routeMehtod.name == 'validateRequest') {
                             const joiSchema = routeMehtod.handle('schemaBypass');
-                            Swagger.swaggerDoc.addNewRoute(joiSchema, regexpToPath(middleware.regexp) + path, routeMehtod.method)
+                            swagger.addNewRoute(joiSchema, regexpToPath(middleware.regexp) + path, routeMehtod.method)
                         }
                     })
                 }

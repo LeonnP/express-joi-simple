@@ -1,3 +1,2 @@
 export * from './Doc';
-export * from './Validate';
-export * from './RequestHandler';
+export * from './joi-express/Validate';
