@@ -74,7 +74,16 @@ export class Swagger {
 
         const parameters = [];
 
-        const { body, params, query, headers, responses } = joiDefinistions;
+        let { body, params, query, headers, responses } = joiDefinistions;
+
+        if(responses == null) {
+
+            responses = {
+                200: {
+                    description: "success"
+                }
+            }
+        }
 
         if (body) {
             parameters.push({
