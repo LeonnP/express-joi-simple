@@ -42,7 +42,7 @@ export function Doc(app: any, settings?: any) {
         }
     });
 
-    const swaggerDocument = fs.readFileSync('./swagger.json', 'utf8');
+    const swaggerDocument = fs.readFileSync(filePath, 'utf8');
 
     let docPath = documentationPath || '/';
 

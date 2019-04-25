@@ -37,7 +37,7 @@ function Doc(app, settings) {
             });
         }
     });
-    var swaggerDocument = fs.readFileSync('./swagger.json', 'utf8');
+    var swaggerDocument = fs.readFileSync(filePath, 'utf8');
     var docPath = documentationPath || '/';
     app.use(docPath, SwaggerUi.serve, SwaggerUi.setup(JSON.parse(swaggerDocument)));
 }
