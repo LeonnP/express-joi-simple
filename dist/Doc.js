@@ -8,6 +8,25 @@ function Doc(app, settings) {
     var info = settings.info, host = settings.host, basePath = settings.basePath, documentationPath = settings.documentationPath, initialData = settings.initialData, filePath = settings.filePath;
     var swagger = new swagger_json_1.Swagger(filePath);
     swagger.createJsonDoc(info, host, basePath, initialData);
+    var handleStacks = function (middlewareStack, middleware) {
+        middlewareStack.forEach(function (handler) {
+            if (!handler.route) {
+                if (handler.handle != null && handler.handle.stack != null) {
+                    handleStacks(handler.handle.stack, middleware);
+                }
+                return;
+            }
+            var _a = handler.route, path = _a.path, stack = _a.stack;
+            if (path) {
+                stack.forEach(function (routeMehtod) {
+                    if (routeMehtod.name == 'validateRequest') {
+                        var joiSchema = routeMehtod.handle('schemaBypass');
+                        swagger.addNewRoute(joiSchema, helper_1.regexpToPath(middleware.regexp) + path, routeMehtod.method);
+                    }
+                });
+            }
+        });
+    };
     app._router.stack.forEach(function (middleware) {
         if (middleware.route) { // routes registered directly on the app
             var _a = middleware.route, path_1 = _a.path, stack = _a.stack;
@@ -21,20 +40,24 @@ function Doc(app, settings) {
             }
         }
         else if (middleware.name === 'router' && middleware.handle.stack) { // router middleware
-            middleware.handle.stack.forEach(function (handler) {
-                if (!handler.route) {
+            handleStacks(middleware.handle.stack, middleware);
+            /*
+            middleware.handle.stack.forEach((handler: any) => {
+                if(!handler.route) {
                     return;
                 }
-                var _a = handler.route, path = _a.path, stack = _a.stack;
+
+                const { path, stack } = handler.route;
                 if (path) {
-                    stack.forEach(function (routeMehtod) {
+                    stack.forEach((routeMehtod: any) => {
                         if (routeMehtod.name == 'validateRequest') {
-                            var joiSchema = routeMehtod.handle('schemaBypass');
-                            swagger.addNewRoute(joiSchema, helper_1.regexpToPath(middleware.regexp) + path, routeMehtod.method);
+                            const joiSchema = routeMehtod.handle('schemaBypass');
+                            swagger.addNewRoute(joiSchema, regexpToPath(middleware.regexp) + path, routeMehtod.method)
                         }
-                    });
+                    })
                 }
             });
+             */
         }
     });
     var swaggerDocument = fs.readFileSync(filePath, 'utf8');

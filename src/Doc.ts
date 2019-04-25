@@ -10,6 +10,32 @@ export function Doc(app: any, settings?: any) {
     const swagger = new Swagger(filePath);
     swagger.createJsonDoc(info, host, basePath, initialData);
 
+    const handleStacks = (middlewareStack: any, middleware: any) => {
+
+        middlewareStack.forEach((handler: any) => {
+
+            if(!handler.route) {
+
+                if(handler.handle != null && handler.handle.stack != null) {
+
+                    handleStacks(handler.handle.stack, middleware);
+                }
+
+                return;
+            }
+
+            const { path, stack } = handler.route;
+            if (path) {
+                stack.forEach((routeMehtod: any) => {
+                    if (routeMehtod.name == 'validateRequest') {
+                        const joiSchema = routeMehtod.handle('schemaBypass');
+                        swagger.addNewRoute(joiSchema, regexpToPath(middleware.regexp) + path, routeMehtod.method)
+                    }
+                })
+            }
+        });
+    };
+
     app._router.stack.forEach((middleware: any) => {
 
         if (middleware.route) { // routes registered directly on the app
@@ -23,7 +49,10 @@ export function Doc(app: any, settings?: any) {
                 })
             }
         } else if (middleware.name === 'router' && middleware.handle.stack) { // router middleware
-            
+
+            handleStacks(middleware.handle.stack, middleware);
+
+            /*
             middleware.handle.stack.forEach((handler: any) => {
                 if(!handler.route) {
                     return;
@@ -39,6 +68,7 @@ export function Doc(app: any, settings?: any) {
                     })
                 }
             });
+             */
         }
     });
 
