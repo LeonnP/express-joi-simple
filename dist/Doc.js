@@ -6,7 +6,7 @@ var fs = require("fs");
 var helper_1 = require("./helper");
 function Doc(app, settings) {
     var info = settings.info, host = settings.host, basePath = settings.basePath, documentationPath = settings.documentationPath, initialData = settings.initialData;
-    var swagger = new swagger_json_1.Swagger();
+    var swagger = new swagger_json_1.Swagger(documentationPath);
     swagger.createJsonDoc(info, host, basePath, initialData);
     app._router.stack.forEach(function (middleware) {
         if (middleware.route) { // routes registered directly on the app
