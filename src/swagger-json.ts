@@ -6,8 +6,11 @@ export class Swagger {
     definitions: any = {};
     currentRoute: any = [];
     paths: any = {};
+    swaggerFilePath: any;
 
-    constructor() {
+    constructor(swaggerFilePath = 'swagger.json') {
+
+        this.swaggerFilePath = swaggerFilePath;
     }
 
     createJsonDoc(info: any, host: any, basePath: any, swaggerInitialData: any = null) {
@@ -40,7 +43,7 @@ export class Swagger {
             }
         }
 
-        return fs.writeFileSync('swagger.json', JSON.stringify(swaggerData));
+        return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     }
 
     addNewRoute(joiDefinistions: any, path: any, method: any) {
@@ -52,7 +55,7 @@ export class Swagger {
 
         this.currentRoute.push(path + method);
 
-        const swaggerData = fs.readFileSync('swagger.json', 'utf-8');
+        const swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         const otherData = JSON.parse(swaggerData);
         const name = joiDefinistions.model || Date.now();
         const tag = joiDefinistions.group || 'default';
@@ -176,7 +179,7 @@ export class Swagger {
             paths: this.paths
         };
 
-        return fs.writeFileSync('swagger.json', JSON.stringify(newData));
+        return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(newData));
     }
 }
 

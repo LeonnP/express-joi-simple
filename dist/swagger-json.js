@@ -14,10 +14,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require('fs');
 var j2s = require('joi-to-swagger');
 var Swagger = /** @class */ (function () {
-    function Swagger() {
+    function Swagger(swaggerFilePath) {
+        if (swaggerFilePath === void 0) { swaggerFilePath = 'swagger.json'; }
         this.definitions = {};
         this.currentRoute = [];
         this.paths = {};
+        this.swaggerFilePath = swaggerFilePath;
     }
     Swagger.prototype.createJsonDoc = function (info, host, basePath, swaggerInitialData) {
         if (swaggerInitialData === void 0) { swaggerInitialData = null; }
@@ -34,7 +36,7 @@ var Swagger = /** @class */ (function () {
         if (basePath) {
             swaggerData = __assign({}, swaggerData, { basePath: basePath });
         }
-        return fs.writeFileSync('swagger.json', JSON.stringify(swaggerData));
+        return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     };
     Swagger.prototype.addNewRoute = function (joiDefinistions, path, method) {
         var _a, _b, _c, _d;
@@ -42,7 +44,7 @@ var Swagger = /** @class */ (function () {
             return false;
         }
         this.currentRoute.push(path + method);
-        var swaggerData = fs.readFileSync('swagger.json', 'utf-8');
+        var swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         var otherData = JSON.parse(swaggerData);
         var name = joiDefinistions.model || Date.now();
         var tag = joiDefinistions.group || 'default';
@@ -124,7 +126,7 @@ var Swagger = /** @class */ (function () {
                 _d), _c));
         }
         var newData = __assign({}, otherData, { definitions: this.definitions, paths: this.paths });
-        return fs.writeFileSync('swagger.json', JSON.stringify(newData));
+        return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(newData));
     };
     return Swagger;
 }());
