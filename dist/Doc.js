@@ -8,11 +8,11 @@ function Doc(app, settings) {
     var info = settings.info, host = settings.host, basePath = settings.basePath, documentationPath = settings.documentationPath, initialData = settings.initialData, filePath = settings.filePath;
     var swagger = new swagger_json_1.Swagger(filePath);
     swagger.createJsonDoc(info, host, basePath, initialData);
-    var handleStacks = function (middlewareStack, middleware) {
+    var handleStacks = function (middlewareStack, middleware, accPath) {
         middlewareStack.forEach(function (handler) {
             if (!handler.route) {
                 if (handler.handle != null && handler.handle.stack != null) {
-                    handleStacks(handler.handle.stack, middleware);
+                    handleStacks(handler.handle.stack, middleware, helper_1.regexpToPath(handler.regexp));
                 }
                 return;
             }
@@ -21,7 +21,7 @@ function Doc(app, settings) {
                 stack.forEach(function (routeMehtod) {
                     if (routeMehtod.name == 'validateRequest') {
                         var joiSchema = routeMehtod.handle('schemaBypass');
-                        swagger.addNewRoute(joiSchema, helper_1.regexpToPath(middleware.regexp) + path, routeMehtod.method);
+                        swagger.addNewRoute(joiSchema, accPath + helper_1.regexpToPath(middleware.regexp) + path, routeMehtod.method);
                     }
                 });
             }
@@ -40,7 +40,7 @@ function Doc(app, settings) {
             }
         }
         else if (middleware.name === 'router' && middleware.handle.stack) { // router middleware
-            handleStacks(middleware.handle.stack, middleware);
+            handleStacks(middleware.handle.stack, middleware, '');
             /*
             middleware.handle.stack.forEach((handler: any) => {
                 if(!handler.route) {

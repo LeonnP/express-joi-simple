@@ -10,7 +10,7 @@ export function Doc(app: any, settings?: any) {
     const swagger = new Swagger(filePath);
     swagger.createJsonDoc(info, host, basePath, initialData);
 
-    const handleStacks = (middlewareStack: any, middleware: any) => {
+    const handleStacks = (middlewareStack: any, middleware: any, accPath: any) => {
 
         middlewareStack.forEach((handler: any) => {
 
@@ -18,7 +18,7 @@ export function Doc(app: any, settings?: any) {
 
                 if(handler.handle != null && handler.handle.stack != null) {
 
-                    handleStacks(handler.handle.stack, middleware);
+                    handleStacks(handler.handle.stack, middleware, regexpToPath(handler.regexp));
                 }
 
                 return;
@@ -29,7 +29,7 @@ export function Doc(app: any, settings?: any) {
                 stack.forEach((routeMehtod: any) => {
                     if (routeMehtod.name == 'validateRequest') {
                         const joiSchema = routeMehtod.handle('schemaBypass');
-                        swagger.addNewRoute(joiSchema, regexpToPath(middleware.regexp) + path, routeMehtod.method)
+                        swagger.addNewRoute(joiSchema, accPath + regexpToPath(middleware.regexp) + path, routeMehtod.method)
                     }
                 })
             }
@@ -50,7 +50,7 @@ export function Doc(app: any, settings?: any) {
             }
         } else if (middleware.name === 'router' && middleware.handle.stack) { // router middleware
 
-            handleStacks(middleware.handle.stack, middleware);
+            handleStacks(middleware.handle.stack, middleware, '');
 
             /*
             middleware.handle.stack.forEach((handler: any) => {
