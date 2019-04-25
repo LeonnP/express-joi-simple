@@ -18,11 +18,13 @@
   "author": "Vladimir Djukic",
   "license": "ISC",
   "dependencies": {
+    "@types/joi": "^14.3.3",
     "body-parser": "^1.18.3",
+    "joi": "^14.3.1",
+    "joi-to-swagger": "^3.1.0",
     "swagger-ui-express": "^3.0.10"
   },
   "devDependencies": {
-    "@hapi/joi": "^15.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
     "@types/node": "^11.13.7",

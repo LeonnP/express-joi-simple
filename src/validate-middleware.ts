@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi');
+import * as Joi from 'joi';
 
 const validationFields = ['params', 'body', 'query', 'headers'];
 
