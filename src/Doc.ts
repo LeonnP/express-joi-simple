@@ -7,7 +7,7 @@ export function Doc(app: any, settings?: any) {
 
     const {info, host, basePath, documentationPath, initialData} = settings;
 
-    const swagger = new Swagger();
+    const swagger = new Swagger(documentationPath);
     swagger.createJsonDoc(info, host, basePath, initialData);
 
     app._router.stack.forEach((middleware: any) => {
