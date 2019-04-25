@@ -36,6 +36,7 @@ var Swagger = /** @class */ (function () {
         if (basePath) {
             swaggerData = __assign({}, swaggerData, { basePath: basePath });
         }
+        console.log(this.swaggerFilePath);
         return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     };
     Swagger.prototype.addNewRoute = function (joiDefinistions, path, method) {

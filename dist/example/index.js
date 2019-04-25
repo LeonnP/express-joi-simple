@@ -20,7 +20,8 @@ var settings = {
     },
     host: 'localhost:3000',
     basePath: '/',
-    documentationPath: '/doc'
+    documentationPath: '/doc',
+    filePath: './uploads/swagger.json'
 };
 var app = express();
 app.use(BodyParser.json());

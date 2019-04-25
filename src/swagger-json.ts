@@ -43,6 +43,7 @@ export class Swagger {
             }
         }
 
+        console.log(this.swaggerFilePath)
         return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     }
 

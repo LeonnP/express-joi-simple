@@ -19,7 +19,8 @@ const settings = {
     },
     host: 'localhost:3000',
     basePath: '/',
-    documentationPath: '/doc'
+    documentationPath: '/doc',
+    filePath: './uploads/swagger.json'
 };
 
 const app = express();
