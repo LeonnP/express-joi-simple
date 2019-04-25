@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {validate} from '../joi-express/index';
+import {validate} from '../validate-middleware';
 import * as joi from 'joi';
 
 export const router: any = Router();

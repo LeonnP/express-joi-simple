@@ -3,9 +3,8 @@ import {router} from './router';
 import * as BodyParser from 'body-parser';
 import * as joi from 'joi';
 import {Doc} from '../Doc';
-import {validate} from '../joi-express/index';
+import {validate, isValidate} from '../validate-middleware';
 import {settings} from './settings';
-import {isValidate} from "../joi-express/isValidate";
 
 const app = express();
 app.use(BodyParser.json());

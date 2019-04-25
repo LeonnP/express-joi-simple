@@ -7,7 +7,8 @@ export class Swagger {
     currentRoute: any = [];
     paths: any = {};
 
-    constructor() {}
+    constructor() {
+    }
 
     createJsonDoc(info: any, host: any, basePath: any, swaggerInitialData: any = null) {
 
@@ -180,33 +181,31 @@ export class Swagger {
 }
 
 const defaultInitialData = {
-    get: {
-        "swagger": "2.0",
-        "info": {
-            "version": "1.0.0",
-            "title": "Swagger Example",
-            "description": "A sample API",
-            "termsOfService": "http://swagger.io/terms/",
-            "contact": {
-                "name": "Swagger API Team"
-            },
-            "license": {
-                "name": "MIT"
-            }
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Swagger Example",
+        "description": "A sample API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Swagger API Team"
         },
-        "paths": {},
-        "definitions": {},
-        "host": "localhost:3000",
-        "basePath": "/",
-        "schemes": [
-            "http",
-            "https"
-        ],
-        "consumes": [
-            "application/json"
-        ],
-        "produces": [
-            "application/json"
-        ]
-    }
-}
+        "license": {
+            "name": "MIT"
+        }
+    },
+    "paths": {},
+    "definitions": {},
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ]
+};
