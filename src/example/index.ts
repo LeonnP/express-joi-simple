@@ -37,7 +37,7 @@ app.use('/login', router);
 // test isValidate()
 app.use((req, res, next) => {
 
-    if(isValidate(res)) {
+    if (isValidate(res)) {
 
         console.log('This request has been validated!');
 
@@ -45,6 +45,19 @@ app.use((req, res, next) => {
     }
 
     next();
+});
+
+app.use((err: any, req: any, res: any, next: any) => {
+
+    if(isValidate(res)){
+
+        res.json({message: 'Validation errors occured: ' + err.details.map((err: any)  => err.message).join(', ')});
+    }
+    else {
+
+        res.json(err)
+    }
+
 });
 
 app.listen(3000, () => {

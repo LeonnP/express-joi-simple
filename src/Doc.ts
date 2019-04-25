@@ -1,14 +1,14 @@
-
-import * as Swagger from './swagger-json/index';
+import {Swagger} from './swagger-json';
 import * as SwaggerUi from 'swagger-ui-express';
 import * as fs from 'fs';
 import { regexpToPath } from './helper';
 
 export function Doc(app: any, settings?: any) {
-    const {info, host, basePath, documentationPath} = settings;
 
-    const swagger = new Swagger.Swagger();
-    swagger.createJsonDoc(info, host, basePath);
+    const {info, host, basePath, documentationPath, initialData} = settings;
+
+    const swagger = new Swagger();
+    swagger.createJsonDoc(info, host, basePath, initialData);
 
     app._router.stack.forEach((middleware: any) => {
 

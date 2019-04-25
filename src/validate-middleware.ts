@@ -1,24 +1,24 @@
 const Joi = require('joi');
-const Boom = require('boom');
-const Extend = require('extend');
 
+const validationFields = ['params', 'body', 'query', 'headers'];
+
+/**
+ * Json body validation middleware
+ */
 export function validate(schema: any, options: any = {}) {
     options = options || {};
 
     return function validateRequest(req: any, res: any, next: any) {
-        // this is way to to return joi schema without validation
-        // we return this in the express server when we want to create auto doc
-        /* istanbul ignore if */
+
         if(req === 'schemaBypass') {
             return schema;
         }
 
-        /* istanbul ignore if */
         if (!schema) {
             return next();
         }
 
-        const toValidate = ['params', 'body', 'query', 'headers'].reduce((newArr, key) => {
+        const toValidate = validationFields.reduce((newArr, key) => {
             if (!schema[key]) {
                 return newArr;
             }
@@ -39,19 +39,28 @@ export function validate(schema: any, options: any = {}) {
             ...validate
         });
 
-        return Joi.validate(toValidate, schema, options, onValidationComplete);
+        const {error} =  Joi.validate(toValidate, schema, options);
 
-        function onValidationComplete(err: any, validated: any) {
-            if (err) {
-                return next(Boom.badRequest(err.message, err.details));
-            }
+        // for isValidate()
+        res.locals.isValidated = true;
 
-            res.locals.isValidated = true;
+        if (error) {
 
-            // copy the validated data to the req object
-            Extend(req, validated);
-
-            return next();
+            // return error response
+            return next({message: error.message, details: error.details});
         }
+
+        // continue
+        return next();
     }
-};
+}
+
+/**
+ * Check if validation was executed on response object
+ */
+export function isValidate(res: any) {
+
+    if(res == null || res.locals == null) return false;
+
+    return res.locals.isValidated === true;
+}

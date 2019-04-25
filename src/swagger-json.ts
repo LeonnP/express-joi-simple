@@ -1,5 +1,4 @@
 const fs = require('fs');
-const swaggerJson = require('./swagger-json');
 const j2s = require('joi-to-swagger');
 
 export class Swagger {
@@ -8,12 +7,16 @@ export class Swagger {
     currentRoute: any = [];
     paths: any = {};
 
-    constructor() {
+    constructor() {}
 
-    }
+    createJsonDoc(info: any, host: any, basePath: any, swaggerInitialData: any = null) {
 
-    createJsonDoc(info: any, host: any, basePath: any) {
-        let swaggerData = swaggerJson.get;
+        let swaggerData = swaggerInitialData;
+
+        if (swaggerData == null) {
+
+            swaggerData = defaultInitialData;
+        }
 
         if (info) {
             swaggerData = {
@@ -74,9 +77,9 @@ export class Swagger {
 
         const parameters = [];
 
-        let { body, params, query, headers, responses } = joiDefinistions;
+        let {body, params, query, headers, responses} = joiDefinistions;
 
-        if(responses == null) {
+        if (responses == null) {
 
             responses = {
                 200: {
@@ -170,8 +173,40 @@ export class Swagger {
             ...otherData,
             definitions: this.definitions,
             paths: this.paths
-        }
+        };
 
         return fs.writeFileSync('swagger.json', JSON.stringify(newData));
     }
-};
+}
+
+const defaultInitialData = {
+    get: {
+        "swagger": "2.0",
+        "info": {
+            "version": "1.0.0",
+            "title": "Swagger Example",
+            "description": "A sample API",
+            "termsOfService": "http://swagger.io/terms/",
+            "contact": {
+                "name": "Swagger API Team"
+            },
+            "license": {
+                "name": "MIT"
+            }
+        },
+        "paths": {},
+        "definitions": {},
+        "host": "localhost:3000",
+        "basePath": "/",
+        "schemes": [
+            "http",
+            "https"
+        ],
+        "consumes": [
+            "application/json"
+        ],
+        "produces": [
+            "application/json"
+        ]
+    }
+}
