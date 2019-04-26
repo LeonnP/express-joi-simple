@@ -51,6 +51,23 @@ var Swagger = /** @class */ (function () {
         var tag = joiDefinistions.group || 'default';
         var summary = joiDefinistions.description || 'No desc';
         var toSwagger = j2s(joiDefinistions).swagger;
+        var bodyParams = ['body', 'params', 'query', 'headers', 'responses'];
+        if (toSwagger && toSwagger.properties) {
+            bodyParams.forEach(function (param) {
+                if (toSwagger.properties[param] != null && toSwagger.properties[param].properties != null) {
+                    for (var key in toSwagger.properties[param].properties) {
+                        if (toSwagger.properties[param].properties.hasOwnProperty(key)) {
+                            if (toSwagger.properties[param].properties[key].example != null) {
+                                if (toSwagger.properties[param].properties[key].example != null &&
+                                    toSwagger.properties[param].properties[key].example.value != null) {
+                                    toSwagger.properties[param].properties[key].example = toSwagger.properties[param].properties[key].example.value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
         if (toSwagger && toSwagger.properties && toSwagger.properties.body) {
             this.definitions = __assign({}, this.definitions, (_a = {}, _a[name] = toSwagger.properties.body, _a));
         }
@@ -64,13 +81,6 @@ var Swagger = /** @class */ (function () {
             .join('');
         var parameters = [];
         var body = joiDefinistions.body, params = joiDefinistions.params, query = joiDefinistions.query, headers = joiDefinistions.headers, responses = joiDefinistions.responses;
-        if (responses == null) {
-            responses = {
-                200: {
-                    description: "success"
-                }
-            };
-        }
         if (body) {
             parameters.push({
                 "in": "body",
@@ -104,13 +114,27 @@ var Swagger = /** @class */ (function () {
                 parameters.push(__assign({ "in": "header", "name": key }, toSwagger.properties.headers.properties[key]));
             });
         }
+        var responses_final = {};
+        if (responses) {
+            var keys = Object.keys(toSwagger.properties.responses.properties).map(function (key) { return key; });
+            keys.forEach(function (key) {
+                responses_final = __assign({}, responses_final, toSwagger.properties.responses.properties[key]);
+            });
+        }
+        else {
+            responses_final = {
+                200: {
+                    description: "Success"
+                }
+            };
+        }
         if (this.paths && this.paths[transformPath]) {
             this.paths[transformPath] = __assign({}, this.paths[transformPath], (_b = {}, _b[method] = {
                 "tags": [
                     tag
                 ],
                 summary: summary,
-                responses: responses,
+                responses_final: responses_final,
                 parameters: parameters,
             }, _b));
         }
@@ -121,7 +145,7 @@ var Swagger = /** @class */ (function () {
                         tag
                     ],
                     summary: summary,
-                    responses: responses,
+                    responses_final: responses_final,
                     parameters: parameters,
                 },
                 _d), _c));

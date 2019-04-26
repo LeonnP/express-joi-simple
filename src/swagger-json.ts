@@ -63,7 +63,35 @@ export class Swagger {
         const summary = joiDefinistions.description || 'No desc';
 
         const toSwagger = j2s(joiDefinistions).swagger;
+
+        const bodyParams = ['body', 'params', 'query', 'headers', 'responses'];
+
+        if (toSwagger && toSwagger.properties) {
+
+            bodyParams.forEach(param => {
+
+                if (toSwagger.properties[param] != null && toSwagger.properties[param].properties != null) {
+
+                    for (let key in toSwagger.properties[param].properties) {
+
+                        if (toSwagger.properties[param].properties.hasOwnProperty(key)) {
+
+                            if (toSwagger.properties[param].properties[key].example != null) {
+
+                                if (toSwagger.properties[param].properties[key].example != null &&
+                                    toSwagger.properties[param].properties[key].example.value != null) {
+
+                                    toSwagger.properties[param].properties[key].example = toSwagger.properties[param].properties[key].example.value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         if (toSwagger && toSwagger.properties && toSwagger.properties.body) {
+
             this.definitions = {
                 ...this.definitions,
                 [name]: toSwagger.properties.body
@@ -83,15 +111,6 @@ export class Swagger {
         const parameters = [];
 
         let {body, params, query, headers, responses} = joiDefinistions;
-
-        if (responses == null) {
-
-            responses = {
-                200: {
-                    description: "success"
-                }
-            }
-        }
 
         if (body) {
             parameters.push({
@@ -127,6 +146,7 @@ export class Swagger {
             const keys = Object.keys(toSwagger.properties.query.properties).map((key) => key);
 
             keys.forEach((key) => {
+
                 parameters.push({
                     "in": "query",
                     "name": key,
@@ -146,6 +166,25 @@ export class Swagger {
             })
         }
 
+        let responses_final = {};
+
+        if (responses) {
+            const keys = Object.keys(toSwagger.properties.responses.properties).map((key) => key);
+            keys.forEach((key) => {
+                responses_final = {
+                    ...responses_final,
+                    ...toSwagger.properties.responses.properties[key]
+                }
+            })
+        } else {
+
+            responses_final = {
+                200: {
+                    description: "Success"
+                }
+            }
+        }
+
         if (this.paths && this.paths[transformPath]) {
             this.paths[transformPath] = {
                 ...this.paths[transformPath],
@@ -154,7 +193,7 @@ export class Swagger {
                         tag
                     ],
                     summary,
-                    responses,
+                    responses_final,
                     parameters,
                 }
             }
@@ -167,7 +206,7 @@ export class Swagger {
                             tag
                         ],
                         summary,
-                        responses,
+                        responses_final,
                         parameters,
                     }
                 }
