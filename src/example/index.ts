@@ -20,7 +20,17 @@ const settings = {
     host: 'localhost:3000',
     basePath: '/',
     documentationPath: '/doc',
-    filePath: './uploads/swagger.json'
+    filePath: './uploads/swagger.json',
+    responses: [
+        {
+            ref: 'ApiResponse',
+            schema: {
+                data: joi.object().required(),
+                success: joi.boolean().required(),
+                error: joi.object().required(),
+            }
+        }
+    ]
 };
 
 const app = express();
@@ -33,10 +43,11 @@ const schema = {
     responses:
         {
             200: {
-                description: "success"
+                description: "Success",
+                schema: "ApiResponse"
             },
             404: {
-                description: "fail"
+                description: "Fail"
             }
         },
 };

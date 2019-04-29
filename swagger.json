@@ -1,1 +1,99 @@
-{"swagger":"2.0","info":{"title":"Title Example","description":"Description API example","termsOfService":"http://swagger.io/terms/","contact":{"name":"Example team"},"license":{"name":"MIT"}},"paths":{"/register":{"post":{"tags":["default"],"summary":"No desc","responses":{"200":{"description":"success"},"404":{"description":"fail"}},"parameters":[{"in":"body","name":"body","schema":{"$ref":"#/definitions/Register"}}]}},"/login/test":{"post":{"tags":["default"],"summary":"No desc","responses":{"200":{"description":"success"}},"parameters":[{"in":"body","name":"body","schema":{"$ref":"#/definitions/Login"}}]}}},"definitions":{"Register":{"type":"object","required":["test1"],"properties":{"test1":{"type":"string"}}},"Login":{"type":"object","required":["test1"],"properties":{"test1":{"type":"string"}}}},"host":"localhost:3000","basePath":"/","schemes":["http","https"],"consumes":["application/json"],"produces":["application/json"]}
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Title Example",
+    "description": "Description API example",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Example team"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "No desc",
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "fail"
+          }
+        },
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Register"
+            }
+          }
+        ]
+      }
+    },
+    "/login/test": {
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "No desc",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        },
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Register": {
+      "type": "object",
+      "required": [
+        "test1"
+      ],
+      "properties": {
+        "test1": {
+          "type": "string"
+        }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "required": [
+        "test1"
+      ],
+      "properties": {
+        "test1": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ]
+}

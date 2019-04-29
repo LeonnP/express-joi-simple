@@ -5,10 +5,10 @@ import { regexpToPath } from './helper';
 
 export function Doc(app: any, settings?: any) {
 
-    const {info, host, basePath, documentationPath, initialData, filePath} = settings;
+    const {info, host, basePath, documentationPath, initialData, filePath, responses} = settings;
 
     const swagger = new Swagger(filePath);
-    swagger.createJsonDoc(info, host, basePath, initialData);
+    swagger.createJsonDoc(info, host, basePath, initialData, responses);
 
     const handleStacks = (middlewareStack: any, middleware: any, accPath: any) => {
 

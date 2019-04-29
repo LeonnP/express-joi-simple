@@ -5,9 +5,9 @@ var SwaggerUi = require("swagger-ui-express");
 var fs = require("fs");
 var helper_1 = require("./helper");
 function Doc(app, settings) {
-    var info = settings.info, host = settings.host, basePath = settings.basePath, documentationPath = settings.documentationPath, initialData = settings.initialData, filePath = settings.filePath;
+    var info = settings.info, host = settings.host, basePath = settings.basePath, documentationPath = settings.documentationPath, initialData = settings.initialData, filePath = settings.filePath, responses = settings.responses;
     var swagger = new swagger_json_1.Swagger(filePath);
-    swagger.createJsonDoc(info, host, basePath, initialData);
+    swagger.createJsonDoc(info, host, basePath, initialData, responses);
     var handleStacks = function (middlewareStack, middleware, accPath) {
         middlewareStack.forEach(function (handler) {
             if (!handler.route) {

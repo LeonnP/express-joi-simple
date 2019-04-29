@@ -13,7 +13,7 @@ export class Swagger {
         this.swaggerFilePath = swaggerFilePath;
     }
 
-    createJsonDoc(info: any, host: any, basePath: any, swaggerInitialData: any = null) {
+    createJsonDoc(info: any, host: any, basePath: any, swaggerInitialData: any = null, responses: any = []) {
 
         let swaggerData = swaggerInitialData;
 
@@ -43,7 +43,20 @@ export class Swagger {
             }
         }
 
-        console.log(this.swaggerFilePath)
+
+        if (responses) {
+
+            responses.forEach((response: any) => {
+
+                const toSwagger = j2s(response.schema).swagger;
+
+                this.definitions = {
+                    ...this.definitions,
+                    [response.ref]: toSwagger
+                };
+            });
+        }
+
         return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     }
 
@@ -185,15 +198,34 @@ export class Swagger {
         let responses_final = {};
 
         if (responses) {
-            const keys = Object.keys(toSwagger.properties.responses.properties).map((key) => key);
-            keys.forEach((key) => {
+
+            let responseCodes: any = Object.keys(responses).map((key) => key);
+
+            responseCodes.forEach((code: any) => {
+
+                let schemaObj: any = {};
+
+                if (responses[code].schema) {
+                    schemaObj = {
+                        schema: {
+                            "$ref": `#/definitions/${responses[code].schema}`
+                        }
+                    };
+
+                }
+
                 responses_final = {
                     ...responses_final,
-                    ...toSwagger.properties.responses.properties[key]
+                    [code]: {
+                        description: responses[code].description,
+                        ...schemaObj
+                    }
                 }
-            })
+            });
+
         } else {
 
+            // must be here or swagger will be buggy
             responses_final = {
                 200: {
                     description: "Success"
@@ -209,7 +241,7 @@ export class Swagger {
                         tag
                     ],
                     summary,
-                    responses_final,
+                    responses: responses_final,
                     parameters,
                 }
             }
@@ -222,7 +254,7 @@ export class Swagger {
                             tag
                         ],
                         summary,
-                        responses_final,
+                        responses: responses_final,
                         parameters,
                     }
                 }

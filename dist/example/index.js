@@ -21,7 +21,17 @@ var settings = {
     host: 'localhost:3000',
     basePath: '/',
     documentationPath: '/doc',
-    filePath: './uploads/swagger.json'
+    filePath: './uploads/swagger.json',
+    responses: [
+        {
+            ref: 'ApiResponse',
+            schema: {
+                data: joi.object().required(),
+                success: joi.boolean().required(),
+                error: joi.object().required(),
+            }
+        }
+    ]
 };
 var app = express();
 app.use(BodyParser.json());
@@ -31,10 +41,11 @@ var schema = {
     },
     responses: {
         200: {
-            description: "success"
+            description: "Success",
+            schema: "ApiResponse"
         },
         404: {
-            description: "fail"
+            description: "Fail"
         }
     },
 };

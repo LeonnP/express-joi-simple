@@ -21,8 +21,10 @@ var Swagger = /** @class */ (function () {
         this.paths = {};
         this.swaggerFilePath = swaggerFilePath;
     }
-    Swagger.prototype.createJsonDoc = function (info, host, basePath, swaggerInitialData) {
+    Swagger.prototype.createJsonDoc = function (info, host, basePath, swaggerInitialData, responses) {
+        var _this = this;
         if (swaggerInitialData === void 0) { swaggerInitialData = null; }
+        if (responses === void 0) { responses = []; }
         var swaggerData = swaggerInitialData;
         if (swaggerData == null) {
             swaggerData = defaultInitialData;
@@ -36,7 +38,13 @@ var Swagger = /** @class */ (function () {
         if (basePath) {
             swaggerData = __assign({}, swaggerData, { basePath: basePath });
         }
-        console.log(this.swaggerFilePath);
+        if (responses) {
+            responses.forEach(function (response) {
+                var _a;
+                var toSwagger = j2s(response.schema).swagger;
+                _this.definitions = __assign({}, _this.definitions, (_a = {}, _a[response.ref] = toSwagger, _a));
+            });
+        }
         return fs.writeFileSync(this.swaggerFilePath, JSON.stringify(swaggerData));
     };
     Swagger.prototype.addNewRoute = function (joiDefinistions, path, method) {
@@ -122,9 +130,18 @@ var Swagger = /** @class */ (function () {
         }
         var responses_final = {};
         if (responses) {
-            var keys = Object.keys(toSwagger.properties.responses.properties).map(function (key) { return key; });
-            keys.forEach(function (key) {
-                responses_final = __assign({}, responses_final, toSwagger.properties.responses.properties[key]);
+            var responseCodes = Object.keys(responses).map(function (key) { return key; });
+            responseCodes.forEach(function (code) {
+                var _a;
+                var schemaObj = {};
+                if (responses[code].schema) {
+                    schemaObj = {
+                        schema: {
+                            "$ref": "#/definitions/" + responses[code].schema
+                        }
+                    };
+                }
+                responses_final = __assign({}, responses_final, (_a = {}, _a[code] = __assign({ description: responses[code].description }, schemaObj), _a));
             });
         }
         else {
@@ -140,7 +157,7 @@ var Swagger = /** @class */ (function () {
                     tag
                 ],
                 summary: summary,
-                responses_final: responses_final,
+                responses: responses_final,
                 parameters: parameters,
             }, _b));
         }
@@ -151,7 +168,7 @@ var Swagger = /** @class */ (function () {
                         tag
                     ],
                     summary: summary,
-                    responses_final: responses_final,
+                    responses: responses_final,
                     parameters: parameters,
                 },
                 _d), _c));
