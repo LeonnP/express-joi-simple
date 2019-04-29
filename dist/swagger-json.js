@@ -38,6 +38,7 @@ var Swagger = /** @class */ (function () {
         if (basePath) {
             swaggerData = __assign({}, swaggerData, { basePath: basePath });
         }
+        // add responses definitions
         if (responses) {
             responses.forEach(function (response) {
                 var _a;
@@ -145,6 +146,7 @@ var Swagger = /** @class */ (function () {
             });
         }
         else {
+            // must be here or swagger will be buggy
             responses_final = {
                 200: {
                     description: "Success"

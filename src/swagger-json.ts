@@ -43,7 +43,7 @@ export class Swagger {
             }
         }
 
-
+        // add responses definitions
         if (responses) {
 
             responses.forEach((response: any) => {
