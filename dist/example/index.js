@@ -25,23 +25,13 @@ var settings = {
 };
 var app = express();
 app.use(BodyParser.json());
-var response_obj = {
-    "type": "object",
-    "properties": {
-        data: joi.object(),
-        success: joi.object(),
-        error: joi.object()
-    }
-};
 var schema = {
     body: {
         test1: joi.string().example('asd').description('hi').required()
     },
-    model: 'Register',
     responses: {
         200: {
-            description: "success",
-            schema: response_obj
+            description: "success"
         },
         404: {
             description: "fail"

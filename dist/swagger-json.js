@@ -47,7 +47,7 @@ var Swagger = /** @class */ (function () {
         this.currentRoute.push(path + method);
         var swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         var otherData = JSON.parse(swaggerData);
-        var name = joiDefinistions.model || Date.now();
+        var name = joiDefinistions.model;
         var tag = joiDefinistions.group || 'default';
         var summary = joiDefinistions.description || 'No desc';
         var toSwagger = j2s(joiDefinistions).swagger;
@@ -68,7 +68,7 @@ var Swagger = /** @class */ (function () {
                 }
             });
         }
-        if (toSwagger && toSwagger.properties && toSwagger.properties.body) {
+        if (toSwagger && toSwagger.properties && toSwagger.properties.body && name) {
             this.definitions = __assign({}, this.definitions, (_a = {}, _a[name] = toSwagger.properties.body, _a));
         }
         var pathArray = path.split('/').filter(Boolean);
@@ -82,14 +82,20 @@ var Swagger = /** @class */ (function () {
         var parameters = [];
         var body = joiDefinistions.body, params = joiDefinistions.params, query = joiDefinistions.query, headers = joiDefinistions.headers, responses = joiDefinistions.responses;
         if (body) {
-            parameters.push({
+            var newParams = {
                 "in": "body",
-                "name": "body",
-                // ...toSwagger.properties.body
-                "schema": {
-                    "$ref": "#/definitions/" + name
-                }
-            });
+                "name": "body"
+            };
+            var pushedParam = {};
+            if (name != null) {
+                pushedParam = __assign({}, newParams, { schema: {
+                        "$ref": "#/definitions/" + name
+                    } });
+            }
+            else {
+                pushedParam = __assign({}, newParams, toSwagger.properties.body);
+            }
+            parameters.push(pushedParam);
         }
         if (params) {
             var getParams = [];

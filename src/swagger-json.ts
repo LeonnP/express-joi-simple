@@ -58,7 +58,7 @@ export class Swagger {
 
         const swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         const otherData = JSON.parse(swaggerData);
-        const name = joiDefinistions.model || Date.now();
+        const name = joiDefinistions.model;
         const tag = joiDefinistions.group || 'default';
         const summary = joiDefinistions.description || 'No desc';
 
@@ -90,7 +90,7 @@ export class Swagger {
             });
         }
 
-        if (toSwagger && toSwagger.properties && toSwagger.properties.body) {
+        if (toSwagger && toSwagger.properties && toSwagger.properties.body && name) {
 
             this.definitions = {
                 ...this.definitions,
@@ -113,14 +113,30 @@ export class Swagger {
         let {body, params, query, headers, responses} = joiDefinistions;
 
         if (body) {
-            parameters.push({
+
+            let newParams = {
                 "in": "body",
-                "name": "body",
-                // ...toSwagger.properties.body
-                "schema": {
-                    "$ref": `#/definitions/${name}`
+                "name": "body"
+            };
+
+            let pushedParam = {};
+
+            if (name != null) {
+
+                pushedParam = {
+                    ...newParams,
+                    schema: {
+                        "$ref": `#/definitions/${name}`
+                    }
                 }
-            })
+            } else {
+                pushedParam = {
+                    ...newParams,
+                    ...toSwagger.properties.body
+                }
+            }
+
+            parameters.push(pushedParam)
         }
 
         if (params) {
