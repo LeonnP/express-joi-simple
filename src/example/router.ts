@@ -9,6 +9,7 @@ const schema = {
         test1: joi.string().required()
     },
     model: 'Login',
+    visible: false
 }
 
 router.post('/test', validate(schema), (req: any, res: any) => {

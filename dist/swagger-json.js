@@ -53,6 +53,9 @@ var Swagger = /** @class */ (function () {
         if (this.currentRoute.includes(path + method)) {
             return false;
         }
+        if (joiDefinistions.visible === false) {
+            return false;
+        }
         this.currentRoute.push(path + method);
         var swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         var otherData = JSON.parse(swaggerData);

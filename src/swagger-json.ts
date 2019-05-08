@@ -67,6 +67,11 @@ export class Swagger {
             return false;
         }
 
+        if(joiDefinistions.visible === false) {
+
+            return false;
+        }
+
         this.currentRoute.push(path + method);
 
         const swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');

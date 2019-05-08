@@ -43,7 +43,7 @@ const schema = {
     headers: {
         A: joi.string().required()
     },
-    visible: false
+    visible: true
 };
 
 
