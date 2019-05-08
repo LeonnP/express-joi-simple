@@ -33,9 +33,16 @@ function validate(schema, options) {
             }
             if (key === 'headers') {
                 var headersToValidate = {};
-                for (var property in req.headers) {
-                    if (req.headers.hasOwnProperty(property) && schema.headers.hasOwnProperty(property)) {
-                        headersToValidate = __assign({}, headersToValidate, (_a = {}, _a[property] = req.headers[property], _a));
+                for (var property in schema.headers) {
+                    // schema contains property?
+                    if (schema.headers.hasOwnProperty(property)) {
+                        var propertyToLower = property.toLowerCase();
+                        // headers contain property (case insensitive)
+                        // this works because node makes all headers lower case
+                        if (req.headers.hasOwnProperty(propertyToLower)) {
+                            // add property from headers to validation object
+                            headersToValidate = __assign({}, headersToValidate, (_a = {}, _a[property] = req.headers[propertyToLower], _a));
+                        }
                     }
                 }
                 return __assign({}, newArr, (_b = {}, _b[key] = headersToValidate, _b));

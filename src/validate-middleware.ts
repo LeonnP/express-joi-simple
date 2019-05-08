@@ -27,13 +27,24 @@ export function validate(schema: any, options: any = {}) {
 
                 let headersToValidate = {};
 
-                for (let property in req.headers) {
+                for (let property in schema.headers) {
 
-                    if (req.headers.hasOwnProperty(property) && schema.headers.hasOwnProperty(property)) {
+                    // schema contains property?
+                    if (schema.headers.hasOwnProperty(property)) {
 
-                        headersToValidate = {
-                            ...headersToValidate,
-                            [property]: req.headers[property]
+                        const propertyToLower = property.toLowerCase();
+
+                        // headers contain property (case insensitive)
+                        // this works because node makes all headers lower case
+                        if (req.headers.hasOwnProperty(propertyToLower)) {
+
+                            // add property from headers to validation object
+                            headersToValidate = {
+                                ...headersToValidate,
+                                // property - original schema property
+                                // value - property from headers
+                                [property]: req.headers[propertyToLower]
+                            }
                         }
                     }
                 }
