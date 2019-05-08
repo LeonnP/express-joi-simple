@@ -37,17 +37,11 @@ var app = express();
 app.use(BodyParser.json());
 var schema = {
     body: {
-        test1: joi.string().example('asd').description('hi').required()
+        test1: joi.string().required()
     },
-    responses: {
-        200: {
-            description: "Success",
-            schema: "ApiResponse"
-        },
-        404: {
-            description: "Fail"
-        }
-    },
+    headers: {
+        a: joi.string().required()
+    }
 };
 app.post('/register', validate_middleware_1.validate(schema), function (req, res, next) {
     next();

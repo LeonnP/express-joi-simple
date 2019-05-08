@@ -56,7 +56,7 @@ var Swagger = /** @class */ (function () {
         this.currentRoute.push(path + method);
         var swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         var otherData = JSON.parse(swaggerData);
-        var name = joiDefinistions.model;
+        var name = joiDefinistions.model || new Date().getTime().toString();
         var tag = joiDefinistions.group || 'default';
         var summary = joiDefinistions.description || 'No desc';
         var toSwagger = j2s(joiDefinistions).swagger;

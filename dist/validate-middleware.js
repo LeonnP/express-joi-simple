@@ -27,15 +27,20 @@ function validate(schema, options) {
             return next();
         }
         var toValidate = validationFields.reduce(function (newArr, key) {
-            var _a, _b;
+            var _a, _b, _c;
             if (!schema[key]) {
                 return newArr;
             }
             if (key === 'headers') {
-                var authorization = req.headers.authorization;
-                return __assign({}, newArr, (_a = {}, _a[key] = { authorization: authorization }, _a));
+                var headersToValidate = {};
+                for (var property in req.headers) {
+                    if (req.headers.hasOwnProperty(property) && schema.headers.hasOwnProperty(property)) {
+                        headersToValidate = __assign({}, headersToValidate, (_a = {}, _a[property] = req.headers[property], _a));
+                    }
+                }
+                return __assign({}, newArr, (_b = {}, _b[key] = headersToValidate, _b));
             }
-            return __assign({}, newArr, (_b = {}, _b[key] = req[key], _b));
+            return __assign({}, newArr, (_c = {}, _c[key] = req[key], _c));
         }, __assign({}, validate));
         var error = Joi.validate(toValidate, schema, options).error;
         // for isValidate()

@@ -71,7 +71,7 @@ export class Swagger {
 
         const swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         const otherData = JSON.parse(swaggerData);
-        const name = joiDefinistions.model;
+        const name = joiDefinistions.model || new Date().getTime().toString();
         const tag = joiDefinistions.group || 'default';
         const summary = joiDefinistions.description || 'No desc';
 

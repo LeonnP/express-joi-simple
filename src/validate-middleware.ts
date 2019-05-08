@@ -10,7 +10,7 @@ export function validate(schema: any, options: any = {}) {
 
     return function validateRequest(req: any, res: any, next: any) {
 
-        if(req === 'schemaBypass') {
+        if (req === 'schemaBypass') {
             return schema;
         }
 
@@ -24,10 +24,23 @@ export function validate(schema: any, options: any = {}) {
             }
 
             if (key === 'headers') {
-                const { authorization } = req.headers;
+
+                let headersToValidate = {};
+
+                for (let property in req.headers) {
+
+                    if (req.headers.hasOwnProperty(property) && schema.headers.hasOwnProperty(property)) {
+
+                        headersToValidate = {
+                            ...headersToValidate,
+                            [property]: req.headers[property]
+                        }
+                    }
+                }
+
                 return {
                     ...newArr,
-                    [key]: { authorization }
+                    [key]: headersToValidate
                 }
             }
 
@@ -39,7 +52,7 @@ export function validate(schema: any, options: any = {}) {
             ...validate
         });
 
-        const {error} =  Joi.validate(toValidate, schema, options);
+        const {error} = Joi.validate(toValidate, schema, options);
 
         // for isValidate()
         res.locals.isValidated = true;
@@ -60,7 +73,7 @@ export function validate(schema: any, options: any = {}) {
  */
 export function isValidate(res: any) {
 
-    if(res == null || res.locals == null) return false;
+    if (res == null || res.locals == null) return false;
 
     return res.locals.isValidated === true;
 }
