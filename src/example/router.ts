@@ -8,8 +8,10 @@ const schema = {
     body: {
         test1: joi.string().required()
     },
-    model: 'Login',
-    visible: false
+    model: {
+        name: 'Login'
+    },
+    visible: true
 }
 
 router.post('/test', validate(schema), (req: any, res: any) => {

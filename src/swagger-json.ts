@@ -7,6 +7,7 @@ export class Swagger {
     currentRoute: any = [];
     paths: any = {};
     swaggerFilePath: any;
+    cssToHide: string[] = [];
 
     constructor(swaggerFilePath = 'swagger.json') {
 
@@ -76,7 +77,34 @@ export class Swagger {
 
         const swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         const otherData = JSON.parse(swaggerData);
-        const name = joiDefinistions.model || new Date().getTime().toString();
+
+        const model = joiDefinistions.model;
+
+        let name = new Date().getTime().toString();
+
+        if(model != null && model.name != null && model.name.length > 0){
+
+            name = joiDefinistions.model.name;
+        }
+
+        if(model != null){
+
+            if(model.name != null && model.name.length > 0){
+
+                name = joiDefinistions.model.name;
+            }
+
+            if(model.visible != null && model.visible === false){
+
+                this.cssToHide.push(name);
+            }
+        }
+        else {
+
+            // if model is null, assume that it will be hidden
+            this.cssToHide.push(name);
+        }
+
         const tag = joiDefinistions.group || 'default';
         const summary = joiDefinistions.description || 'No desc';
 

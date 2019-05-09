@@ -19,6 +19,7 @@ var Swagger = /** @class */ (function () {
         this.definitions = {};
         this.currentRoute = [];
         this.paths = {};
+        this.cssToHide = [];
         this.swaggerFilePath = swaggerFilePath;
     }
     Swagger.prototype.createJsonDoc = function (info, host, basePath, swaggerInitialData, responses) {
@@ -59,7 +60,23 @@ var Swagger = /** @class */ (function () {
         this.currentRoute.push(path + method);
         var swaggerData = fs.readFileSync(this.swaggerFilePath, 'utf-8');
         var otherData = JSON.parse(swaggerData);
-        var name = joiDefinistions.model || new Date().getTime().toString();
+        var model = joiDefinistions.model;
+        var name = new Date().getTime().toString();
+        if (model != null && model.name != null && model.name.length > 0) {
+            name = joiDefinistions.model.name;
+        }
+        if (model != null) {
+            if (model.name != null && model.name.length > 0) {
+                name = joiDefinistions.model.name;
+            }
+            if (model.visible != null && model.visible === false) {
+                this.cssToHide.push(name);
+            }
+        }
+        else {
+            // if model is null, assume that it will be hidden
+            this.cssToHide.push(name);
+        }
         var tag = joiDefinistions.group || 'default';
         var summary = joiDefinistions.description || 'No desc';
         var toSwagger = j2s(joiDefinistions).swagger;

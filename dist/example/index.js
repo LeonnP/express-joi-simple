@@ -42,7 +42,11 @@ var schema = {
     headers: {
         A: joi.string().required()
     },
-    visible: true
+    visible: true,
+    model: {
+        name: 'Test',
+        visible: false
+    }
 };
 app.post('/register', validate_middleware_1.validate(schema), function (req, res, next) {
     next();

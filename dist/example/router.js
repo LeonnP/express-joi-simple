@@ -8,8 +8,10 @@ var schema = {
     body: {
         test1: joi.string().required()
     },
-    model: 'Login',
-    visible: false
+    model: {
+        name: 'Login'
+    },
+    visible: true
 };
 exports.router.post('/test', validate_middleware_1.validate(schema), function (req, res) {
     res.json({ message: 'test' });

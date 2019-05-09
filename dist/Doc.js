@@ -62,7 +62,14 @@ function Doc(app, settings) {
     });
     var swaggerDocument = fs.readFileSync(filePath, 'utf8');
     var docPath = documentationPath || '/';
-    app.use(docPath, SwaggerUi.serve, SwaggerUi.setup(JSON.parse(swaggerDocument)));
+    var cssIdsToHideJoined = swagger.cssToHide.map(function (cssId) { return '#model-' + cssId; }).join(',');
+    var cssForHidingModels = '';
+    if (cssIdsToHideJoined.length > 0) {
+        cssForHidingModels = cssIdsToHideJoined + ' {display: none}';
+    }
+    app.use(docPath, SwaggerUi.serve, SwaggerUi.setup(JSON.parse(swaggerDocument), {
+        customCss: cssForHidingModels
+    }));
 }
 exports.Doc = Doc;
 //# sourceMappingURL=Doc.js.map
